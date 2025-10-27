@@ -115,7 +115,7 @@ bool test_event_creation() {
     event_destroy(currency);
 
     // Test time event
-    GameEvent* time_ev = event_create_time_advance(TIME_NEW_DAY, 2, "morning");
+    GameEvent* time_ev = event_create_time_advance(TIME_SUBTYPE_NEW_DAY, 2, "morning");
     TEST_ASSERT(time_ev != NULL, "Time event created");
     TEST_ASSERT(time_ev->type == EVENT_TIME, "Time event type correct");
     TEST_ASSERT(time_ev->game_day == 2, "Game day correct");

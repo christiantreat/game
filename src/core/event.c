@@ -231,7 +231,7 @@ const char* event_subtype_to_string(EventSubtype subtype) {
         case AGRICULTURAL_CROP_PLANTED: return "CropPlanted";
         case AGRICULTURAL_CROP_HARVESTED: return "CropHarvested";
         case ENVIRONMENTAL_WEATHER_CHANGED: return "WeatherChanged";
-        case TIME_NEW_DAY: return "NewDay";
+        case TIME_SUBTYPE_NEW_DAY: return "NewDay";
         case SYSTEM_ENTITY_CREATED: return "EntityCreated";
         default: return "Unknown";
     }
