@@ -13,12 +13,12 @@ BUILD_DIR = build
 
 # Source files
 LIB_SOURCES = $(LIB_DIR)/cJSON.c
-CORE_SOURCES = $(SRC_DIR)/component.c $(SRC_DIR)/entity.c $(SRC_DIR)/game_state.c $(SRC_DIR)/event.c $(SRC_DIR)/decision.c $(SRC_DIR)/behavior.c $(SRC_DIR)/world.c
+CORE_SOURCES = $(SRC_DIR)/component.c $(SRC_DIR)/entity.c $(SRC_DIR)/game_state.c $(SRC_DIR)/event.c $(SRC_DIR)/decision.c $(SRC_DIR)/behavior.c $(SRC_DIR)/world.c $(SRC_DIR)/agriculture.c
 ALL_SOURCES = $(LIB_SOURCES) $(CORE_SOURCES)
 
 # Object files
 LIB_OBJECTS = $(BUILD_DIR)/cJSON.o
-CORE_OBJECTS = $(BUILD_DIR)/component.o $(BUILD_DIR)/entity.o $(BUILD_DIR)/game_state.o $(BUILD_DIR)/event.o $(BUILD_DIR)/decision.o $(BUILD_DIR)/behavior.o $(BUILD_DIR)/world.o
+CORE_OBJECTS = $(BUILD_DIR)/component.o $(BUILD_DIR)/entity.o $(BUILD_DIR)/game_state.o $(BUILD_DIR)/event.o $(BUILD_DIR)/decision.o $(BUILD_DIR)/behavior.o $(BUILD_DIR)/world.o $(BUILD_DIR)/agriculture.o
 ALL_OBJECTS = $(LIB_OBJECTS) $(CORE_OBJECTS)
 
 # Test files
@@ -27,9 +27,10 @@ TEST_PHASE2 = $(BUILD_DIR)/test_phase2
 TEST_PHASE3 = $(BUILD_DIR)/test_phase3
 TEST_PHASE4 = $(BUILD_DIR)/test_phase4
 TEST_PHASE5 = $(BUILD_DIR)/test_phase5
+TEST_PHASE6 = $(BUILD_DIR)/test_phase6
 
 # Default target
-all: $(BUILD_DIR) $(TEST_PHASE1) $(TEST_PHASE2) $(TEST_PHASE3) $(TEST_PHASE4) $(TEST_PHASE5)
+all: $(BUILD_DIR) $(TEST_PHASE1) $(TEST_PHASE2) $(TEST_PHASE3) $(TEST_PHASE4) $(TEST_PHASE5) $(TEST_PHASE6)
 
 # Create build directory
 $(BUILD_DIR):
@@ -61,6 +62,9 @@ $(BUILD_DIR)/behavior.o: $(SRC_DIR)/behavior.c $(SRC_DIR)/behavior.h | $(BUILD_D
 $(BUILD_DIR)/world.o: $(SRC_DIR)/world.c $(SRC_DIR)/world.h | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+$(BUILD_DIR)/agriculture.o: $(SRC_DIR)/agriculture.c $(SRC_DIR)/agriculture.h | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
 # Build test executables
 $(TEST_PHASE1): $(ALL_OBJECTS) $(TEST_DIR)/test_phase1.c
 	$(CC) $(CFLAGS) $(TEST_DIR)/test_phase1.c $(ALL_OBJECTS) -o $@ $(LDFLAGS)
@@ -77,8 +81,11 @@ $(TEST_PHASE4): $(ALL_OBJECTS) $(TEST_DIR)/test_phase4.c
 $(TEST_PHASE5): $(ALL_OBJECTS) $(TEST_DIR)/test_phase5.c
 	$(CC) $(CFLAGS) $(TEST_DIR)/test_phase5.c $(ALL_OBJECTS) -o $@ $(LDFLAGS)
 
+$(TEST_PHASE6): $(ALL_OBJECTS) $(TEST_DIR)/test_phase6.c
+	$(CC) $(CFLAGS) $(TEST_DIR)/test_phase6.c $(ALL_OBJECTS) -o $@ $(LDFLAGS)
+
 # Run all tests
-test: test1 test2 test3 test4 test5
+test: test1 test2 test3 test4 test5 test6
 
 test1: $(TEST_PHASE1)
 	@echo "===================================================="
@@ -114,6 +121,13 @@ test5: $(TEST_PHASE5)
 	@echo "===================================================="
 	@./$(TEST_PHASE5)
 
+test6: $(TEST_PHASE6)
+	@echo ""
+	@echo "===================================================="
+	@echo "Running Phase 6 Tests"
+	@echo "===================================================="
+	@./$(TEST_PHASE6)
+
 # Clean build artifacts
 clean:
 	rm -rf $(BUILD_DIR)
@@ -138,9 +152,10 @@ help:
 	@echo "  test3     - Run Phase 3 tests only"
 	@echo "  test4     - Run Phase 4 tests only"
 	@echo "  test5     - Run Phase 5 tests only"
+	@echo "  test6     - Run Phase 6 tests only"
 	@echo "  clean     - Remove build artifacts"
 	@echo "  rebuild   - Clean and rebuild"
 	@echo "  deps      - Show dependencies"
 	@echo "  help      - Show this help"
 
-.PHONY: all test test1 test2 test3 test4 test5 clean rebuild deps help
+.PHONY: all test test1 test2 test3 test4 test5 test6 clean rebuild deps help
