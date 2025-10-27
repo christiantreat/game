@@ -13,20 +13,20 @@ BUILD_DIR = build
 
 # Source files
 LIB_SOURCES = $(LIB_DIR)/cJSON.c
-CORE_SOURCES = $(SRC_DIR)/component.c $(SRC_DIR)/entity.c $(SRC_DIR)/game_state.c
+CORE_SOURCES = $(SRC_DIR)/component.c $(SRC_DIR)/entity.c $(SRC_DIR)/game_state.c $(SRC_DIR)/event.c
 ALL_SOURCES = $(LIB_SOURCES) $(CORE_SOURCES)
 
 # Object files
 LIB_OBJECTS = $(BUILD_DIR)/cJSON.o
-CORE_OBJECTS = $(BUILD_DIR)/component.o $(BUILD_DIR)/entity.o $(BUILD_DIR)/game_state.o
+CORE_OBJECTS = $(BUILD_DIR)/component.o $(BUILD_DIR)/entity.o $(BUILD_DIR)/game_state.o $(BUILD_DIR)/event.o
 ALL_OBJECTS = $(LIB_OBJECTS) $(CORE_OBJECTS)
 
 # Test files
-TEST_SOURCES = $(TEST_DIR)/test_phase1.c
-TEST_EXECUTABLE = $(BUILD_DIR)/test_phase1
+TEST_PHASE1 = $(BUILD_DIR)/test_phase1
+TEST_PHASE2 = $(BUILD_DIR)/test_phase2
 
 # Default target
-all: $(BUILD_DIR) $(TEST_EXECUTABLE)
+all: $(BUILD_DIR) $(TEST_PHASE1) $(TEST_PHASE2)
 
 # Create build directory
 $(BUILD_DIR):
@@ -46,16 +46,31 @@ $(BUILD_DIR)/entity.o: $(SRC_DIR)/entity.c $(SRC_DIR)/entity.h | $(BUILD_DIR)
 $(BUILD_DIR)/game_state.o: $(SRC_DIR)/game_state.c $(SRC_DIR)/game_state.h | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Build test executable
-$(TEST_EXECUTABLE): $(ALL_OBJECTS) $(TEST_SOURCES)
-	$(CC) $(CFLAGS) $(TEST_SOURCES) $(ALL_OBJECTS) -o $@ $(LDFLAGS)
+$(BUILD_DIR)/event.o: $(SRC_DIR)/event.c $(SRC_DIR)/event.h | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# Run tests
-test: $(TEST_EXECUTABLE)
+# Build test executables
+$(TEST_PHASE1): $(ALL_OBJECTS) $(TEST_DIR)/test_phase1.c
+	$(CC) $(CFLAGS) $(TEST_DIR)/test_phase1.c $(ALL_OBJECTS) -o $@ $(LDFLAGS)
+
+$(TEST_PHASE2): $(ALL_OBJECTS) $(TEST_DIR)/test_phase2.c
+	$(CC) $(CFLAGS) $(TEST_DIR)/test_phase2.c $(ALL_OBJECTS) -o $@ $(LDFLAGS)
+
+# Run all tests
+test: test1 test2
+
+test1: $(TEST_PHASE1)
 	@echo "===================================================="
 	@echo "Running Phase 1 Tests"
 	@echo "===================================================="
-	@./$(TEST_EXECUTABLE)
+	@./$(TEST_PHASE1)
+
+test2: $(TEST_PHASE2)
+	@echo ""
+	@echo "===================================================="
+	@echo "Running Phase 2 Tests"
+	@echo "===================================================="
+	@./$(TEST_PHASE2)
 
 # Clean build artifacts
 clean:
@@ -75,10 +90,12 @@ help:
 	@echo ""
 	@echo "Targets:"
 	@echo "  all       - Build everything (default)"
-	@echo "  test      - Build and run tests"
+	@echo "  test      - Build and run all tests"
+	@echo "  test1     - Run Phase 1 tests only"
+	@echo "  test2     - Run Phase 2 tests only"
 	@echo "  clean     - Remove build artifacts"
 	@echo "  rebuild   - Clean and rebuild"
 	@echo "  deps      - Show dependencies"
 	@echo "  help      - Show this help"
 
-.PHONY: all test clean rebuild deps help
+.PHONY: all test test1 test2 clean rebuild deps help
