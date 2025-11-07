@@ -13,12 +13,12 @@ BUILD_DIR = build
 
 # Source files
 LIB_SOURCES = $(LIB_DIR)/cJSON.c
-CORE_SOURCES = $(SRC_DIR)/component.c $(SRC_DIR)/entity.c $(SRC_DIR)/game_state.c $(SRC_DIR)/event.c $(SRC_DIR)/decision.c $(SRC_DIR)/behavior.c $(SRC_DIR)/world.c $(SRC_DIR)/agriculture.c $(SRC_DIR)/economy.c $(SRC_DIR)/social.c
+CORE_SOURCES = $(SRC_DIR)/component.c $(SRC_DIR)/entity.c $(SRC_DIR)/game_state.c $(SRC_DIR)/event.c $(SRC_DIR)/decision.c $(SRC_DIR)/behavior.c $(SRC_DIR)/world.c $(SRC_DIR)/agriculture.c $(SRC_DIR)/economy.c $(SRC_DIR)/social.c $(SRC_DIR)/game_loop.c
 ALL_SOURCES = $(LIB_SOURCES) $(CORE_SOURCES)
 
 # Object files
 LIB_OBJECTS = $(BUILD_DIR)/cJSON.o
-CORE_OBJECTS = $(BUILD_DIR)/component.o $(BUILD_DIR)/entity.o $(BUILD_DIR)/game_state.o $(BUILD_DIR)/event.o $(BUILD_DIR)/decision.o $(BUILD_DIR)/behavior.o $(BUILD_DIR)/world.o $(BUILD_DIR)/agriculture.o $(BUILD_DIR)/economy.o $(BUILD_DIR)/social.o
+CORE_OBJECTS = $(BUILD_DIR)/component.o $(BUILD_DIR)/entity.o $(BUILD_DIR)/game_state.o $(BUILD_DIR)/event.o $(BUILD_DIR)/decision.o $(BUILD_DIR)/behavior.o $(BUILD_DIR)/world.o $(BUILD_DIR)/agriculture.o $(BUILD_DIR)/economy.o $(BUILD_DIR)/social.o $(BUILD_DIR)/game_loop.o
 ALL_OBJECTS = $(LIB_OBJECTS) $(CORE_OBJECTS)
 
 # Test files
@@ -30,9 +30,10 @@ TEST_PHASE5 = $(BUILD_DIR)/test_phase5
 TEST_PHASE6 = $(BUILD_DIR)/test_phase6
 TEST_PHASE7 = $(BUILD_DIR)/test_phase7
 TEST_PHASE8 = $(BUILD_DIR)/test_phase8
+TEST_PHASE9 = $(BUILD_DIR)/test_phase9
 
 # Default target
-all: $(BUILD_DIR) $(TEST_PHASE1) $(TEST_PHASE2) $(TEST_PHASE3) $(TEST_PHASE4) $(TEST_PHASE5) $(TEST_PHASE6) $(TEST_PHASE7) $(TEST_PHASE8)
+all: $(BUILD_DIR) $(TEST_PHASE1) $(TEST_PHASE2) $(TEST_PHASE3) $(TEST_PHASE4) $(TEST_PHASE5) $(TEST_PHASE6) $(TEST_PHASE7) $(TEST_PHASE8) $(TEST_PHASE9)
 
 # Create build directory
 $(BUILD_DIR):
@@ -99,7 +100,7 @@ $(TEST_PHASE8): $(ALL_OBJECTS) $(TEST_DIR)/test_phase8.c
 	$(CC) $(CFLAGS) $(TEST_DIR)/test_phase8.c $(ALL_OBJECTS) -o $@ $(LDFLAGS)
 
 # Run all tests
-test: test1 test2 test3 test4 test5 test6 test7 test8
+test: test1 test2 test3 test4 test5 test6 test7 test8 test9
 
 test1: $(TEST_PHASE1)
 	@echo "===================================================="
@@ -183,9 +184,26 @@ help:
 	@echo "  test6     - Run Phase 6 tests only"
 	@echo "  test7     - Run Phase 7 tests only"
 	@echo "  test8     - Run Phase 8 tests only"
+	@echo "  test9     - Run Phase 9 tests only"
 	@echo "  clean     - Remove build artifacts"
 	@echo "  rebuild   - Clean and rebuild"
 	@echo "  deps      - Show dependencies"
 	@echo "  help      - Show this help"
 
-.PHONY: all test test1 test2 test3 test4 test5 test6 test7 test8 clean rebuild deps help
+.PHONY: all test test1 test2 test3 test4 test5 test6 test7 test8 test9 clean rebuild deps help
+
+# Phase 9 additions
+TEST_PHASE9 = $(BUILD_DIR)/test_phase9
+
+$(BUILD_DIR)/game_loop.o: $(SRC_DIR)/game_loop.c $(SRC_DIR)/game_loop.h | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(TEST_PHASE9): $(ALL_OBJECTS) $(TEST_DIR)/test_phase9.c
+	$(CC) $(CFLAGS) $(TEST_DIR)/test_phase9.c $(ALL_OBJECTS) -o $@ $(LDFLAGS)
+
+test9: $(TEST_PHASE9)
+	@echo ""
+	@echo "===================================================="
+	@echo "Running Phase 9 Tests"
+	@echo "===================================================="
+	@./$(TEST_PHASE9)

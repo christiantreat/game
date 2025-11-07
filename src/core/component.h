@@ -121,11 +121,11 @@ CurrencyComponent* currency_component_from_json(cJSON* json);
 typedef struct {
     int entity_id;
     int value;  // -100 to +100
-} Relationship;
+} SimpleRelationship;
 
 typedef struct {
     Component base;
-    Relationship relationships[MAX_RELATIONSHIPS];
+    SimpleRelationship relationships[MAX_RELATIONSHIPS];
     int relationship_count;
 } RelationshipComponent;
 
